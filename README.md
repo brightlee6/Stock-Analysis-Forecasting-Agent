@@ -1,5 +1,18 @@
 # Stock Analysis and Forecasting AI Agent
 
+⚠️ **IMPORTANT DISCLAIMER** ⚠️
+
+This project is a **DEMONSTRATION** of how to apply AI and traditional machine learning techniques to stock analysis. It is **NOT** intended for actual investment decisions. Please note:
+
+- This is an educational project demonstrating AI/ML applications
+- It does NOT provide investment advice or recommendations
+- The forecasts and analyses are for demonstration purposes only
+- Do NOT use this for actual investment decisions
+- The developers take NO responsibility for any investment decisions made using this tool
+- This project is designed to help beginners understand how AI can be applied to traditional ML problems
+
+---
+
 An AI-powered stock analysis system that combines traditional financial analysis with modern generative AI capabilities. This project demonstrates the integration of various AI techniques for stock market analysis and forecasting.
 
 ## Project Ideals
