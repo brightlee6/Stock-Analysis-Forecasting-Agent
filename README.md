@@ -74,7 +74,7 @@ This system can be used for:
    - Enables precise parameter extraction
    - Facilitates consistent data handling
 
-. **Agents**2
+2. **Agents**
    - Implements an intelligent agent architecture
    - Manages complex workflows
    - Coordinates multiple analysis components
