@@ -97,45 +97,6 @@ def parse_relative_date(date_str: str) -> str:
         # If we can't parse it, return today's date
         return today.strftime('%Y-%m-%d')
 
-def create_visualization(data, title, xlabel, ylabel, save_path=None):
-    """
-    Create and save a visualization without displaying it.
-    
-    Args:
-        data: DataFrame containing the data to plot
-        title: Title of the plot
-        xlabel: Label for x-axis
-        ylabel: Label for y-axis
-        save_path: Path to save the plot (optional)
-    """
-    try:
-        plt.style.use('seaborn-v0_8')
-        fig, ax = plt.subplots(figsize=(12, 6))
-        
-        # Plot the data
-        ax.plot(data.index, data.values, label=ylabel, color='blue', linewidth=2)
-        
-        # Customize the plot
-        ax.set_title(title)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-        ax.legend()
-        ax.grid(True)
-        plt.xticks(rotation=45)
-        plt.tight_layout()
-        
-        # Save the plot if path is provided
-        if save_path:
-            plt.savefig(save_path)
-        
-        # Close the figure to free memory
-        plt.close(fig)
-        
-        return True
-    except Exception as e:
-        print(f"Error creating visualization: {str(e)}")
-        return False
-
 # Define the nodes in the graph
 def extract_stock_info(state: AgentState) -> AgentState:
     """Extract stock information from user input."""
@@ -180,19 +141,12 @@ def analyze_historical_data(state: AgentState) -> AgentState:
     """Analyze and visualize historical stock data."""
     try:
         if state["stock_data"] and state["stock_data"].dataframe is not None:
-            # Create visualization using the helper function
-            success = create_visualization(
-                data=state["stock_data"].dataframe['Close'],
-                title=f'{state["stock_data"].ticker} Historical Stock Price',
-                xlabel='Date',
-                ylabel='Price ($)',
-                save_path=f"{state['stock_data'].ticker}_historical.png"
-            )
+            # Create visualization using StockData's visualize_data method
+            state["stock_data"].visualize_data()
+            save_path = f"{state['stock_data'].ticker}_historical.png"
+            state["stock_data"].visualize_data(save_path=save_path)
             
-            if success:
-                state["last_action"] = f"Historical analysis completed. Plot saved as {state['stock_data'].ticker}_historical.png"
-            else:
-                state["last_action"] = "Error creating historical visualization"
+            state["last_action"] = f"Historical analysis completed. Plot saved as {save_path}"
         else:
             state["last_action"] = "No stock data available for analysis"
             
@@ -208,20 +162,13 @@ def run_holdout_analysis(state: AgentState) -> AgentState:
             state["holdout_model"] = StockModelHoldout(state["stock_data"])
             metrics = state["holdout_model"].run_analysis()
             
-            # Create visualization using the helper function
-            success = create_visualization(
-                data=state["holdout_model"].forecast['yhat'],
-                title=f'{state["stock_data"].ticker} Forecast',
-                xlabel='Date',
-                ylabel='Predicted Price ($)',
-                save_path=f"{state['stock_data'].ticker}_holdout_forecast.png"
-            )
+            # Create visualization using StockModelHoldout's visualize_forecast method
+            state["holdout_model"].visualize_forecast()
+            save_path = f"{state['stock_data'].ticker}_holdout_forecast.png"
+            state["holdout_model"].visualize_forecast(save_path=save_path)
             
-            if success:
-                metrics_msg = "\n".join([f"{metric}: {value:.4f}" for metric, value in metrics.items()])
-                state["last_action"] = f"Holdout analysis completed. Metrics:\n{metrics_msg}\nForecast saved as {state['stock_data'].ticker}_holdout_forecast.png"
-            else:
-                state["last_action"] = "Error creating forecast visualization"
+            metrics_msg = "\n".join([f"{metric}: {value:.4f}" for metric, value in metrics.items()])
+            state["last_action"] = f"Holdout analysis completed. Metrics:\n{metrics_msg}\nForecast saved as {save_path}"
         else:
             state["last_action"] = "No stock data available for holdout analysis"
             
@@ -237,20 +184,13 @@ def run_hyperopt_analysis(state: AgentState) -> AgentState:
             state["hyperopt_model"] = StockHyperopt(state["stock_data"])
             best_params = state["hyperopt_model"].run_analysis()
             
-            # Create visualization using the helper function
-            success = create_visualization(
-                data=state["hyperopt_model"].forecast['yhat'],
-                title=f'{state["stock_data"].ticker} Optimized Forecast',
-                xlabel='Date',
-                ylabel='Predicted Price ($)',
-                save_path=f"{state['stock_data'].ticker}_hyperopt_forecast.png"
-            )
+            # Create visualization using StockHyperopt's visualize_forecast method
+            state["hyperopt_model"].visualize_forecast()
+            save_path = f"{state['stock_data'].ticker}_hyperopt_forecast.png"
+            state["hyperopt_model"].visualize_forecast(save_path=save_path)
             
-            if success:
-                params_msg = "\n".join([f"{param}: {value}" for param, value in best_params.items()])
-                state["last_action"] = f"Hyperopt analysis completed. Best parameters:\n{params_msg}\nForecast saved as {state['stock_data'].ticker}_hyperopt_forecast.png"
-            else:
-                state["last_action"] = "Error creating optimized forecast visualization"
+            params_msg = "\n".join([f"{param}: {value}" for param, value in best_params.items()])
+            state["last_action"] = f"Hyperopt analysis completed. Best parameters:\n{params_msg}\nForecast saved as {save_path}"
         else:
             state["last_action"] = "No stock data available for hyperopt analysis"
             

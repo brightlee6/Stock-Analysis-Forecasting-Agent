@@ -93,7 +93,8 @@ class StockHyperopt:
             space=space,
             algo=tpe.suggest,
             max_evals=max_evals,
-            trials=trials
+            trials=trials,
+            show_progressbar=False
         )
         
         # Get the best parameters
@@ -226,4 +227,5 @@ if __name__ == "__main__":
         print(f"{param}: {value}")
         
     # Create visualization
+    model.visualize_forecast()
     model.visualize_forecast("stock_forecast_next_year.png") 
