@@ -5,7 +5,7 @@ from hyperopt import fmin, tpe, hp, STATUS_OK, Trials
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import seaborn as sns
-from stock_data import StockData
+from .stock_data import StockData
 
 class StockHyperopt:
     def __init__(self, stock_data):

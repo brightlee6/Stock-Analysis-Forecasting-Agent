@@ -15,6 +15,30 @@ This project is a **DEMONSTRATION** of how to apply AI and traditional machine l
 
 An AI-powered stock analysis system that combines traditional financial analysis with modern generative AI capabilities. This project demonstrates the integration of various AI techniques for stock market analysis and forecasting.
 
+## Project Structure
+
+```
+stock-analysis-ai/
+├── agent/                  # AI agent implementation
+│   ├── __init__.py        # Agent package initialization
+│   └── stock_agent.py     # Core agent implementation
+├── models/                 # Core analysis modules
+│   ├── __init__.py        # Package initialization
+│   ├── stock_data.py      # Data fetching and preprocessing
+│   ├── stock_model_holdout.py  # Holdout validation model
+│   └── stock_hyperopt.py  # Hyperparameter optimization
+├── tests/                  # Test suite
+│   ├── __init__.py        # Test package initialization
+│   ├── test_stock_data.py # Tests for stock_data.py
+│   ├── test_stock_model_holdout.py # Tests for holdout model
+│   └── test_stock_hyperopt.py # Tests for hyperopt model
+├── setup.py               # Package installation configuration
+├── install.py            # Installation script
+├── run_agent.py          # Script to run the agent
+├── requirements.txt      # Project dependencies
+└── README.md            # Project documentation
+```
+
 ## Project Ideals
 
 This project aims to:
@@ -35,25 +59,25 @@ This system can be used for:
 
 ## Main Components
 
-### 1. StockData Class (`stock_data.py`)
+### 1. StockData Class (`models/stock_data.py`)
 - Handles data fetching from Yahoo Finance
 - Manages data preprocessing and storage
 - Provides visualization capabilities
 - Core data management component
 
-### 2. StockModelHoldout Class (`stock_model_holdout.py`)
+### 2. StockModelHoldout Class (`models/stock_model_holdout.py`)
 - Implements holdout validation for stock forecasting
 - Uses Prophet for time series forecasting
 - Calculates performance metrics
 - Provides visualization of forecast results
 
-### 3. StockHyperopt Class (`stock_hyperopt.py`)
+### 3. StockHyperopt Class (`models/stock_hyperopt.py`)
 - Implements hyperparameter optimization for forecasting models
 - Uses hyperopt for parameter tuning
 - Creates optimized forecasting models
 - Generates future price predictions
 
-### 4. StockAgent Class (`stock_agent.py`)
+### 4. StockAgent Class (`agent/stock_agent.py`)
 - Core AI agent implementation
 - Uses Gemini API for natural language understanding
 - Manages user interactions and requests
@@ -64,6 +88,48 @@ This system can be used for:
   - Document understanding
   - Response grounding
   - Context caching
+
+## Testing
+
+The project includes a comprehensive test suite in the `tests/` directory:
+
+### Test Coverage
+
+1. **StockData Tests** (`tests/test_stock_data.py`)
+   - Data fetching and validation
+   - CSV export functionality
+   - Visualization generation
+   - Error handling for invalid inputs
+
+2. **StockModelHoldout Tests** (`tests/test_stock_model_holdout.py`)
+   - Model initialization and validation
+   - Data splitting
+   - Model training
+   - Forecast generation
+   - Performance metrics calculation
+   - Visualization testing
+
+3. **StockHyperopt Tests** (`tests/test_stock_hyperopt.py`)
+   - Hyperparameter optimization
+   - Model training with best parameters
+   - Forecast generation
+   - Visualization testing
+   - Error handling
+
+### Running Tests
+
+To run the tests, use one of the following commands:
+
+```bash
+# Run all tests
+python -m unittest discover tests
+
+# Run a specific test file
+python -m unittest tests/test_stock_data.py
+
+# Run with verbosity
+python -m unittest discover tests -v
+```
 
 ## Detailed Implementation
 
@@ -126,9 +192,13 @@ git clone <repository-url>
 cd stock-analysis-ai
 ```
 
-2. Install dependencies:
+2. Install the package in development mode:
 ```bash
-pip install -r requirements.txt
+# Method 1: Using the installation script
+python install.py
+
+# Method 2: Using pip directly
+pip install -e .
 ```
 
 3. Set up environment variables:
@@ -139,17 +209,29 @@ cp .env.example .env
 
 ## Usage
 
-Basic usage example:
+You can run the agent in several ways:
+
+1. Using the provided script:
+```bash
+python run_agent.py
+```
+
+2. Running the agent module directly:
+```bash
+python -m agent.stock_agent
+```
+
+3. Importing in your own code:
 ```python
-from stock_agent import StockAgent
+from agent import StockAgent
 
 # Initialize the agent
-agent = StockAgent("YOUR_GEMINI_API_KEY")
+agent = StockAgent()
 
 # Example interactions
-print(agent.handle_request("Show me Apple's stock data from last year"))
-print(agent.handle_request("Analyze Apple's annual report"))
-print(agent.handle_request("Create a forecast for the next year"))
+print(agent.process_user_input("Show me Apple's stock data from last year"))
+print(agent.process_user_input("Analyze Apple's annual report"))
+print(agent.process_user_input("Create a forecast for the next year"))
 ```
 
 ## Requirements

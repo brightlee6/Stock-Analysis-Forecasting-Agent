@@ -4,7 +4,7 @@ from prophet import Prophet
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 import seaborn as sns
-from stock_data import StockData
+from .stock_data import StockData
 
 class StockModelHoldout:
     def __init__(self, stock_data):

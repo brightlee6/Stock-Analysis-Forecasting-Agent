@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
+import re
 
 class StockData:
     def __init__(self, ticker, start_date, end_date):
@@ -13,7 +14,23 @@ class StockData:
             ticker (str): Stock ticker symbol (e.g., 'AAPL' for Apple)
             start_date (str): Start date in 'YYYY-MM-DD' format
             end_date (str): End date in 'YYYY-MM-DD' format
+            
+        Raises:
+            ValueError: If ticker is invalid or dates are in wrong format
         """
+        # Validate ticker format (1-5 uppercase letters)
+        if not re.match(r'^[A-Z]{1,5}$', ticker):
+            raise ValueError(f"Invalid ticker symbol: {ticker}. Must be 1-5 uppercase letters.")
+            
+        # Validate date formats
+        try:
+            start = datetime.strptime(start_date, '%Y-%m-%d')
+            end = datetime.strptime(end_date, '%Y-%m-%d')
+            if end < start:
+                raise ValueError("End date must be after start date")
+        except ValueError as e:
+            raise ValueError(f"Invalid date format. Dates must be in YYYY-MM-DD format. Error: {str(e)}")
+            
         self.ticker = ticker
         self.start_date = start_date
         self.end_date = end_date
@@ -22,6 +39,9 @@ class StockData:
     def fetch_closing_prices(self):
         """
         Fetch closing prices for the stock and store in dataframe.
+        
+        Raises:
+            ValueError: If stock data cannot be fetched
         """
         try:
             # Convert string dates to datetime objects
@@ -30,6 +50,9 @@ class StockData:
             
             # Fetch stock data using yf.download
             data = yf.download(self.ticker, start=start, end=end)
+            
+            if data.empty:
+                raise ValueError(f"No data found for ticker {self.ticker}")
             
             # Extract closing prices and reset index to make Date a column
             self.dataframe = data[['Close']].reset_index()
@@ -40,7 +63,7 @@ class StockData:
             print(f"Successfully fetched closing prices for {self.ticker}")
             
         except Exception as e:
-            print(f"Error occurred: {str(e)}")
+            raise ValueError(f"Error fetching stock data: {str(e)}")
             
     def save_to_csv(self, output_file):
         """
